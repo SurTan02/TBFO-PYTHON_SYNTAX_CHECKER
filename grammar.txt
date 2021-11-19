@@ -1,0 +1,3 @@
+TERMINALS:
++ - * / : > < = ( ) ! # ' " [ ] str float int  number variables False True None and as break class continue def elif if else for from import in is not or pass raise return while with
+
