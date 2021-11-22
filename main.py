@@ -16,4 +16,9 @@ for tokens in lx.tokens():
     print(tokens.type)
     array.append(tokens.type)
 
-cyk.CYK(array,cyk.MapOfCNF(fileGrammar))
+
+
+if ("S" in cyk.CYK(array,cyk.MapOfCNF(fileGrammar))[-1][-1]):
+    print("Terkonfirmasi Benar")
+else:
+    print("Salah")
