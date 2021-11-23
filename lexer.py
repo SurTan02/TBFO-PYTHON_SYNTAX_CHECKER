@@ -1,7 +1,8 @@
-
-#from token_expressions import tex
+import cyk_parser as parser
+from token_expressions import tex
 import re
 import os
+import datetime as time
 
 class Token(object):
     def __init__(self, type, value, posistion):
@@ -48,8 +49,10 @@ class Lexer(object):
             if m:
                 groupname = m.lastgroup
                 tok_type = self.group_type[groupname]
-                tok = Token(tok_type, m.group(groupname), self.pos)
+                tok = tok_type
                 self.pos = m.end()
+                if (tok == 'WHITESPACE') :
+                    return ''
                 return tok
 
             # if we're here, no rule matched
@@ -67,93 +70,11 @@ class LexerError(Exception):
     def __init__(self, pos):
         self.pos = pos
 
-file_path = './checkfile.txt'
-f = open("checkfile.txt", encoding="utf8")
-text = f.read()
+CYK = parser.Parser('grammar.txt', " COMMENT ")
 
-tex = [
-    (r'\=',                   'ASSIGNMENT'),
-    (r'\(',                    'LP'),
-    (r'\)',                    'RP'),
-    (r'\[',                      'LSB'),
-    (r'\]',                     'RSB'),
-    (r'\*\*',                   'POWER'),
-    (r';',                     'SEMICOLON'),
-    (r'\+',                    'PLUS'),
-    (r'-',                     'MINUS'),
-    (r'\*',                    'MULTIPLY'),
-    (r'\/',                     'DIVIDE'),
-    (r':',                      'COLON'),
-    (r'abs',                    'ABS'),
-    (r'round',                  'ROUND'),
-    (r'pow',                    'POW'),
+def process(sentence) :
+    CYK.__call__(sentence)
+    CYK.parse()
+    return CYK.print_tree()
 
-    (r'\"\"\"',                 'TRIPLEQUOTE'),
-    (r'\'\'\'',                 'TRIPLEQUOTE'),
-     (r'\#.*',                  'COMMENT'),
-    (r'\".*\"',                  'STRING'),
-    (r'\'.*\'',                 'STRING'),
-    (r'\.',                     'WITH_METHOD'),
-     (r'\d+',                   'INTEGER'),
-    (r'\d+.+\d',                'FLOAT'),
-    (r'[a-zA-Z_]+[\da-zA-Z_0-9]*','IDENTIFIER'),
 
-    (r'<=',                    'LESS_OR_EQUAL_THAN'),
-    (r'<',                     'LESS_THAN'),
-    (r'>=',                    'GREATER_OR_EQUAL_THAN'),
-    (r'>',                     'GREATER_THAN'),
-    (r'==',                    'EQUALS'),
-    (r'!=',                    'NOT_EQUAL'),
-
-    (r'str',                    'STR'),
-    (r'int',                    'INT'),
-    (r'float',                  'TO_FLOAT'),
-
-    (r'\n',                     'NEWLINE'),
-    (r'and',                   'AND'),
-    (r'\sor\s',                 'OR'),
-    (r'not',                   'NOT'),
-    (r'if\(',                    'IF_LP'),
-    (r'if\s',                    'IF'),
-    (r'elif\(',                    'ELIF_LP'),
-    (r'elif\s',                    'ELIF'),
-    # (r'then',                  'THEN'),
-    (r'else',                  'ELSE'),
-    (r'while',                 'WHILE'),
-    # (r'do',                    'DO'),
-    # (r'end',                   'END'),
-    (r'print',                 'PRINT'),
-    (r'is\s',                     'IS'),
-    (r'bool',                   'BOOL'),
-    (r'import\s',                 'IMPORT'),
-    (r'None',                   'NONE'),
-    (r'False',                  'FALSE'),
-    (r'True',                   'TRUE'),
-    (r'as\s',                   'AS'),
-    (r'break\n',                  'BREAK NEWLINE'),
-    (r'break\w',                'BREAK ERROR'),
-    (r'class\s',                'CLASS'),
-    (r'continue\n',             'CONTINUE'),
-    (r'def\s',                  'DEF'),
-    (r'for\s',                  'FOR'),
-    (r'from\s',                 'FROM'),
-    (r'in\s',                   'IN'),
-    (r'not',                    'NOT'),
-    (r'pass',                   'PASS'),
-    (r'raise\s',                  'RAISE'),
-    (r'return\s',               'RETURN'),
-    (r'while',                  'WHILE'),
-    (r'with',                   'WITH'),
-    (r'\w',                     'NULL'),
-    
-]
-
-lexered = Lexer(tex, skip_whitespace=True)
-lexered.input(text)
-
-try:
-    for tokens in lexered.tokens():
-        print(tokens)
-except LexerError as err:
-    print('LexerError at position %s' % err.pos)
-    
