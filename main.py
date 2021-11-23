@@ -49,13 +49,16 @@ ErrorFound = False
 if_toggle = 0
 isMultiLine = False
 indexLine = 0
+multiLineIdx =0
 
 while (ErrorFound == False and indexLine!=lenOfLine):
     if (line[indexLine].count('TRIPLEQUOTE') != 0):
         if (isMultiLine):
-            isMultiLine = False       
+            isMultiLine = False
+            multiLineIdx = indexLine+1
         else:
-            isMultiLine = True   
+            isMultiLine = True
+            multiLineIdx = indexLine+1
     else :
         
         if (line[indexLine] == ' ' or line[indexLine] == ''):
@@ -107,17 +110,20 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                     # print(textForWarning[indexLine])
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
                     ErrorFound =True
-        else:
-            print("Syntax Error!")
-            print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
-            # print("~~~~~~~~~~~~~~~~~~~~~~")
-            # print(textForWarning[indexLine])
-            # print("~~~~~~~~~~~~~~~~~~~~~~")
-            ErrorFound =True
+            
     indexLine += 1
 
 
 
+
+if (not ErrorFound and isMultiLine):
+    indexLine = multiLineIdx 
+    print("Syntax Error!")
+    print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
+    # print("~~~~~~~~~~~~~~~~~~~~~~")
+    # print(textForWarning[indexLine])
+    # print("~~~~~~~~~~~~~~~~~~~~~~")
+    ErrorFound =True
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 if (not ErrorFound) :
