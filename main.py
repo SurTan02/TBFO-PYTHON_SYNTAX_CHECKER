@@ -16,10 +16,10 @@ else:
 text = open(fileUji).read()
 
 #Ntar nando hapus ini
-# lx = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
-# lxForLine = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
-lx = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
-lxForLine = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
+lx = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
+lxForLine = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
+# lx = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
+# lxForLine = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
 lx.input(text)
 lxForLine.input(text)
 
@@ -52,6 +52,7 @@ indexLine = 0
 multiLineIdx =0
 
 while (ErrorFound == False and indexLine!=lenOfLine):
+    
     if (line[indexLine].count('TRIPLEQUOTE') != 0):
         if (isMultiLine):
             isMultiLine = False
@@ -64,8 +65,9 @@ while (ErrorFound == False and indexLine!=lenOfLine):
         if (line[indexLine] == ' ' or line[indexLine] == ''):
                 print("",end='')
         elif (not isMultiLine):
+            
             if (line[indexLine].count(' IF') != 0) :
-
+                
                 temp = line[indexLine].copy()
                 line[indexLine].clear()
                 for x in temp:
@@ -74,6 +76,18 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                 if_toggle += 1
                 
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    
+                    print("Syntax Error!")
+                    print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
+                    # print("~~~~~~~~~~~~~~~~~~~~~~")
+                    # print(textForWarning[indexLine])
+                    # print("~~~~~~~~~~~~~~~~~~~~~~")
+                    ErrorFound =True
+            elif line[indexLine].count('BREAK NEWLINE') != 0 :
+                line[indexLine] = ['BREAK']
+                
+                if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
@@ -85,6 +99,7 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                 if if_toggle > 0 :
                     line[indexLine].insert(0,'ELIFTOK')
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
@@ -96,14 +111,19 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                     line[indexLine].insert(0,'ELIFTOK')
                 if_toggle -= 1
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
                     # print(textForWarning[indexLine])
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
                     ErrorFound =True
+
+            
             else :
+                
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
@@ -114,9 +134,10 @@ while (ErrorFound == False and indexLine!=lenOfLine):
     indexLine += 1
 
 
-
+# cyk.printTable(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))
 
 if (not ErrorFound and isMultiLine):
+    
     indexLine = multiLineIdx +1
     print("Syntax Error!")
     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine))
