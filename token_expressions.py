@@ -1,13 +1,13 @@
 tex = [
     (r'\n',                     'NEWLINE'),
     (r'\s',                     'WHITESPACE'),
-    (r'\=',                   'ASSIGNMENT'),
+    (r'==',                    'EQUALS'),
+    (r'\=',                   'ASSIGNS'),
     (r'\(',                    'LP'),
     (r'\)',                    'RP'),
     (r'\[',                      'LSB'),
     (r'\]',                     'RSB'),
     (r'\*\*',                   'POWER'),
-    (r';',                     'SEMICOLON'),
     (r'\+',                    'PLUS'),
     (r'-',                     'MINUS'),
     (r'\*',                    'MULTIPLY'),
@@ -23,7 +23,7 @@ tex = [
     (r'\".*\"',                  'STRING'),
     (r'\'.*\'',                 'STRING'),
     (r'\.',                     'WITH_METHOD'),
-     (r'\d+',                   'INTEGER'),
+     (r'\d+',                   'NUMBER'),
     (r'\d+.+\d',                'FLOAT'),
     
 
@@ -31,7 +31,7 @@ tex = [
     (r'<',                     'LESS_THAN'),
     (r'>=',                    'GREATER_OR_EQUAL_THAN'),
     (r'>',                     'GREATER_THAN'),
-    (r'==',                    'EQUALS'),
+    
     (r'!=',                    'NOT_EQUAL'),
 
     (r'str',                    'STR'),
@@ -42,10 +42,10 @@ tex = [
     (r'and',                   'AND'),
     (r'\sor\s',                 'OR'),
     (r'not',                   'NOT'),
-    (r'if\(',                    'IF_LP'),
+    (r'if\(',                    'IF LP'),
     (r'if\s',                    'IF'),
-    (r'elif\(',                    'ELIF_LP'),
     (r'elif\s',                    'ELIF'),
+    (r'elif\(',                    'ELIF LP'),
     # (r'then',                  'THEN'),
     (r'else',                  'ELSE'),
     (r'while',                 'WHILE'),
