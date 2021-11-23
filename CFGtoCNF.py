@@ -42,15 +42,26 @@ def convertGrammar(grammar):
         addRule(rule)
         res_append(rule)
         if new_rules:
-            result.extend(new_rules)
+            # result.extend(new_rules)
+            res_append(new_rules)
     while unit_productions:
         rule = unit_productions.pop()
         if rule[1] in DICT_RULE:
             for item in DICT_RULE[rule[1]]:
                 new_rule = [rule[0]] + item
                 if len(new_rule) > 2 or new_rule[1][0] == "'":
-                    result.insert(0, new_rule)
+                    # result.insert(0, new_rule)
+                    res_append(new_rule)
                 else:
                     unit_productions.append(new_rule)
                 addRule(new_rule)
+    with open('CNF.txt', 'w') as file:
+        for element in result:
+            if len(element)==3:
+                file.write(f'{element[0]} -> {element[1]} {element[2]}\n')
+            elif len(element)==2:
+                file.write(f'{element[0]} -> {element[1]}\n')
     return result
+
+if __name__=="__main__":
+    convertGrammar(readGrammar())

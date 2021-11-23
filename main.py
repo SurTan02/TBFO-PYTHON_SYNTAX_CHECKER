@@ -2,19 +2,18 @@ from typing import Counter, Tuple
 import cyk
 import lexer
 import token_expressions
-import CFGtoCNF
-import datetime as time
+import rules_lexer
 
-# mungkin langsung pake cnf.txt
-# atau pnaggil cfg2cnf(grammar.txt)
-# fileGrammar = "grammar.txt"
-fileGrammar = "CNF3.txt"
+#CNF Sudah diconvert sebelum program ini dijalankan
+fileGrammar = "CNF.txt"
 fileUji = str(input("Ketikkan nama File Uji: "))
 text = open(fileUji).read()
 
-lx = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
-lxForLine = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
-# lx = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
+#Ntar nando hapus ini
+# lx = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
+# lxForLine = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
+lx = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
+lxForLine = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
 lx.input(text)
 lxForLine.input(text)
 
@@ -38,86 +37,64 @@ for tokens in lx.tokens():
             line[i].append(tokens)
 
 
-# for i in range(lenOfLine):
-#     print(line[i])
 
 #State
 ErrorFound = False
 if_toggle = 0
-multiline_toggle = False
-start_time = time.datetime.now()
-total_success = 0
-total_error = 0
-line_counter = 0
+isMultiLine = False
+indexLine = 0
 
-while (ErrorFound == False and line_counter!=lenOfLine):
-    # print(line[line_counter])
-    # if ("S" in cyk.CYK(line[line_counter],cyk.MapOfCNF(fileGrammar))[-1][-1]):
-    #     print("Terkonfirmasi Benar")
-    # else:
-    #     cyk.printTable(cyk.CYK(line[line_counter],cyk.MapOfCNF(fileGrammar))[-1])
-    #     print("======================================")
-    # print((line[line_counter].count('TRIPLEQUOTE')))
-    if (line[line_counter].count('TRIPLEQUOTE') != 0) and multiline_toggle == False :
-        multiline_toggle = True
-        total_success += 1                
-    elif (line[line_counter].count('TRIPLEQUOTE') != 0) and multiline_toggle == True :
-            multiline_toggle = False
-            total_success += 1
+while (ErrorFound == False and indexLine!=lenOfLine):
+    if (line[indexLine].count('TRIPLEQUOTE') != 0):
+        if (isMultiLine):
+            isMultiLine = False       
+        else:
+            isMultiLine = True   
     else :
         
-        if (line[line_counter] == ' ' or line[line_counter] == ''):
+        if (line[indexLine] == ' ' or line[indexLine] == ''):
                 print("",end='')
-                total_success += 1
-        elif multiline_toggle == False :
-            if (line[line_counter].count('IF') != 0) :
-                # print(line[line_counter])
+        elif (not isMultiLine):
+            if (line[indexLine].count(' IF') != 0) :
+
+                temp = line[indexLine].copy()
+                line[indexLine].clear()
+                for x in temp:
+                    y = x.replace(' IF', 'IF')
+                    line[indexLine].append(y)
                 if_toggle += 1
                 
-                if (cyk.cekValid(cyk.CYK(line[line_counter],cyk.MapOfCNF(fileGrammar)))):
-                    total_success += 1
-                else :
-                    print("Error at line {}.".format(line_counter+1))
-                    total_error += 1
+                if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    print("Syntax Error!")
+                    print("Terdapat kesalahan syntax pada line {}.".format(indexLine+1))
+                  
                     ErrorFound =True
                    
-            elif line[line_counter].count('ELIF') != 0:
+            elif line[indexLine].count('ELIF') != 0:
                 if if_toggle > 0 :
-                    line[line_counter].insert(0,'ELIFTOK')
-                if (cyk.cekValid(cyk.CYK(line[line_counter],cyk.MapOfCNF(fileGrammar)))):
-                    total_success += 1
-                else :
-                    print("Error at line {}.".format(line_counter+1))
-                    total_error += 1
+                    line[indexLine].insert(0,'ELIFTOK')
+                if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    print("Syntax Error!")
+                    print("Terdapat kesalahan syntax pada line {}.".format(indexLine+1))
+                    
                     ErrorFound =True
-            elif line[line_counter].count('ELSE') != 0 :
+            elif line[indexLine].count('ELSE') != 0 :
                 if if_toggle > 0 :
-                    line[line_counter].insert(0,'ELIFTOK')
+                    line[indexLine].insert(0,'ELIFTOK')
                 if_toggle -= 1
-                if (cyk.cekValid(cyk.CYK(line[line_counter],cyk.MapOfCNF(fileGrammar)))):
-                    total_success += 1
-                else :
-                    print("Error at line {}.".format(line_counter+1))
-                    total_error += 1
+                if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    print("Syntax Error!")
+                    print("Terdapat kesalahan syntax pada line {}.".format(indexLine+1))
                     ErrorFound =True
             else :
-                
-                if (cyk.cekValid(cyk.CYK(line[line_counter],cyk.MapOfCNF(fileGrammar))) ==True):
-                    total_success += 1
-                else :
-                    print("Error at line {}.".format(line_counter+1))
-                    total_error += 1
+                if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
+                    print("Syntax Error!")
+                    print("Terdapat kesalahan syntax pada line {}.".format(indexLine+1))
+                   
                     ErrorFound =True
-    line_counter += 1
+    indexLine += 1
     
-if (total_error == 0) :
-    print("ACCEPTED")
+if (not ErrorFound) :
+    print("Accepted!\nTidak ditemukan kesalahan syntax pada file")
 
-# for i in range(lenOfLine):
-#     # cyk.printTable (cyk.CYK(line[i],cyk.MapOfCNF(fileGrammar)))
-#     # print("=======")
-#     # print("=======")
-#     if ("S" in cyk.CYK(line[i],cyk.MapOfCNF(fileGrammar))[-1][-1]):
-#         print("Terkonfirmasi Benar")
-#     else:
-#         print("Salah")
+    
