@@ -72,7 +72,7 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                 
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
                     print("Syntax Error!")
-                    print("Terdapat kesalahan syntax pada line {}".format(indexLine+1))
+                    print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
                     # print(textForWarning[indexLine])
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
@@ -94,7 +94,7 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                 if_toggle -= 1
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
                     print("Syntax Error!")
-                    print("Terdapat kesalahan syntax pada line {}".format(indexLine+1))
+                    print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
                     # print(textForWarning[indexLine])
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
@@ -102,11 +102,18 @@ while (ErrorFound == False and indexLine!=lenOfLine):
             else :
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
                     print("Syntax Error!")
-                    print("Terdapat kesalahan syntax pada line {}".format(indexLine+1))
+                    print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
                     # print(textForWarning[indexLine])
                     # print("~~~~~~~~~~~~~~~~~~~~~~")
                     ErrorFound =True
+        else:
+            print("Syntax Error!")
+            print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
+            # print("~~~~~~~~~~~~~~~~~~~~~~")
+            # print(textForWarning[indexLine])
+            # print("~~~~~~~~~~~~~~~~~~~~~~")
+            ErrorFound =True
     indexLine += 1
 
 
