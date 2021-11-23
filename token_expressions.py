@@ -1,4 +1,6 @@
 tex = [
+    (r'\n',                     'NEWLINE'),
+    (r'\s',                     'WHITESPACE'),
     (r'\=',                   'ASSIGNMENT'),
     (r'\(',                    'LP'),
     (r'\)',                    'RP'),
@@ -23,7 +25,7 @@ tex = [
     (r'\.',                     'WITH_METHOD'),
      (r'\d+',                   'INTEGER'),
     (r'\d+.+\d',                'FLOAT'),
-    (r'[a-zA-Z_]+[\da-zA-Z_0-9]*','IDENTIFIER'),
+    
 
     (r'<=',                    'LESS_OR_EQUAL_THAN'),
     (r'<',                     'LESS_THAN'),
@@ -36,6 +38,7 @@ tex = [
     (r'int',                    'INT'),
     (r'float',                  'TO_FLOAT'),
 
+   
     (r'and',                   'AND'),
     (r'\sor\s',                 'OR'),
     (r'not',                   'NOT'),
@@ -56,8 +59,8 @@ tex = [
     (r'False',                  'FALSE'),
     (r'True',                   'TRUE'),
     (r'as\s',                   'AS'),
-    (r'break\n',                  'BREAK_NEWLINE'),
-    (r'break\w',                'BREAK_ERROR'),
+    (r'break\n',                  'BREAK NEWLINE'),
+    (r'break\w',                'BREAK ERROR'),
     (r'class\s',                'CLASS'),
     (r'continue\n',             'CONTINUE'),
     (r'def\s',                  'DEF'),
@@ -70,6 +73,8 @@ tex = [
     (r'return\s',               'RETURN'),
     (r'while',                  'WHILE'),
     (r'with',                   'WITH'),
+    (r'[a-zA-Z_]+[\da-zA-Z_0-9]*','IDENTIFIER'),
     (r'\w',                     'NULL'),
+    
     
 ]
