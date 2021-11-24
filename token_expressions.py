@@ -18,6 +18,7 @@ tex = [
     (r'abs',                    'ABS'),
     (r'round',                  'ROUND'),
     (r'pow',                    'POW'),
+    (r',',                      'COMA'),
 
 
      (r'\#.*',                  'COMMENT'),
