@@ -1,3 +1,4 @@
+
 def MapOfCNF(filename):
 
     file = open(filename).read()
@@ -14,7 +15,6 @@ def MapOfCNF(filename):
             #Cek apakah sudah ada map yang memetakan leftside dan rightside(/more)
             #jika belum maka diassign
             
-                
             if (chomskyGrammar.get(RightSide[j]) == None):
                 
                 chomskyGrammar.update({RightSide[j] : [leftSide]})
@@ -27,27 +27,15 @@ def MapOfCNF(filename):
                 #     print("aaa",  chomskyGrammar[RightSide[j]])
                 # if (chomskyGrammar.get(RightSide[j])[0] not in chomskyGrammar[RightSide[j]]):
                 
-    # print(chomskyGrammar["IDENTIFIER"])
+   
     
     chomskyGrammar["'IDENTIFIER'"].append('IDENTIFIER3')
     chomskyGrammar["'IDENTIFIER'"].append('OBJ27')
     chomskyGrammar["'IDENTIFIER'"].append('AR112')
     chomskyGrammar["'IDENTIFIER'"].append('AR113')
     chomskyGrammar["'STRING'"].append('STRING')
-    # chomskyGrammar["'INTEGER'"] = chomskyGrammar["'NUMBER'"]
     return chomskyGrammar
 
-def listOfLexered(filename):
-# Fungsi ini mengembalikan list yang berisi kata dari input file yg telah diproses lexer
-
-    file = open(filename).read()
-    member = file.split('\n')
-    
-    arrayOfLexered=["" for i in range (len(member))]
-    for i in range(len(member)):
-        arrayOfLexered[i] = member[i].split('(')[0]
-    
-    return arrayOfLexered
 
 def CYK(sentence, chomskyGrammar):
     
@@ -95,10 +83,13 @@ def printTable(table):
         print("")
 
 def cekValid(table):
-    if ("S" in table[-1][-1]):
+    if (len(table) == 0):
         return True
     else:
-        return False
+        if ("S" in table[-1][-1]):
+            return True
+        else:
+            return False
 
 
 if __name__ == '__main__':
