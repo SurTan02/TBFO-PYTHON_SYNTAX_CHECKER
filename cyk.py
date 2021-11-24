@@ -1,4 +1,3 @@
-
 def MapOfCNF(filename):
 
     file = open(filename).read()

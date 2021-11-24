@@ -1,27 +1,33 @@
-from typing import Counter, Tuple
 import cyk
 import lexer
 import token_expressions
-import rules_lexer
 import sys
+import os
+import rules_lexer
 
 #CNF Sudah diconvert sebelum program ini dijalankan
-fileGrammar = "CNF.txt"
+# fileGrammar = "CNFKITABARU.txt"
+fileGrammar = "CNFA.txt"
 
 if len(sys.argv) > 1:
     fileUji = str(sys.argv[1])
-else:  
+else:
     fileUji = str(input("Ketikkan nama File yang ingin dicek: "))
+    while (not os.path.isfile(fileUji)):
+        print("\033[91mFile Tidak ditemukan, ketikkan nama file yang sesuai!\033[0m")
+        fileUji = str(input("Ketikkan nama File yang ingin dicek: "))
+    
     
 text = open(fileUji).read()
+# lx = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
+# lxForLine = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
 
-#Ntar nando hapus ini
-lx = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
-lxForLine = lexer.Lexer(token_expressions.tex, skip_whitespace=False)
-# lx = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
-# lxForLine = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
+lx = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
+lxForLine = lexer.Lexer(rules_lexer.rules, skip_whitespace=False)
+
 lx.input(text)
 lxForLine.input(text)
+
 
 
 lenOfLine =1
@@ -29,8 +35,10 @@ lenOfLine =1
 for tokens in lxForLine.tokens():
     if (tokens == 'NEWLINE'):
         lenOfLine +=1
+    elif (tokens == 'BREAK NEWLINE'):
+        lenOfLine +=1
 
-
+print(lenOfLine)
 #Buat Array buat nampung
 line =[[] for i in range(lenOfLine)]
 i = 0
@@ -38,11 +46,14 @@ for tokens in lx.tokens():
     if (tokens!=''):
         if (tokens == 'NEWLINE'):
             i+=1
-            
+        elif (tokens == 'BREAK NEWLINE'):
+            line[i].append('BREAK')
+            i+=1
         else:
             line[i].append(tokens)
 
-
+for i in range(lenOfLine):
+    print(line[i])
 
 #State
 ErrorFound = False
@@ -79,20 +90,13 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                     
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
-                    # print(textForWarning[indexLine])
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
                     ErrorFound =True
-            elif line[indexLine].count('BREAK NEWLINE') != 0 :
-                line[indexLine] = ['BREAK']
-                
+            elif line[indexLine].count('BREAK') != 0 :
+
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
                     
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
-                    # print(textForWarning[indexLine])
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
                     ErrorFound =True
                    
             elif line[indexLine].count('ELIF') != 0:
@@ -102,10 +106,8 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                     
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
-                    # print('\033[91m' + textForWarning[indexLine] + '\033[0m')
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
                     ErrorFound =True
+
             elif line[indexLine].count('ELSE') != 0 :
                 if if_toggle > 0 :
                     line[indexLine].insert(0,'ELIFTOK')
@@ -114,36 +116,27 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                     
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
-                    # print(textForWarning[indexLine])
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
                     ErrorFound =True
 
-            
             else :
                 
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
                     
                     print("Syntax Error!")
                     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
-                    # print(textForWarning[indexLine])
-                    # print("~~~~~~~~~~~~~~~~~~~~~~")
                     ErrorFound =True
-            
+    # print("==========")
+    # print(line[indexLine])
+    # cyk.printTable(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))        
     indexLine += 1
 
 
 # cyk.printTable(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))
-
 if (not ErrorFound and isMultiLine):
     
     indexLine = multiLineIdx +1
     print("Syntax Error!")
     print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine))
-    # print("~~~~~~~~~~~~~~~~~~~~~~")
-    # print(textForWarning[indexLine])
-    # print("~~~~~~~~~~~~~~~~~~~~~~")
     ErrorFound =True
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
