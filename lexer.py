@@ -1,8 +1,5 @@
-import cyk_parser as parser
 from token_expressions import tex
 import re
-import os
-import datetime as time
 
 class Token(object):
     def __init__(self, type, value, posistion):
@@ -18,6 +15,10 @@ class Lexer(object):
         index = 1
         holder = []
         self.group_type = {}
+        self.prevStr = "" 
+        self.prevTok = ""
+        self.currStr = ""
+        self.currTok = ""
 
         for regex, type in rules:
             groupname = 'GROUP%s' % index
@@ -46,10 +47,17 @@ class Lexer(object):
                     return None
 
             m = self.regex.match(self.buf, self.pos)
+
             if m:
                 groupname = m.lastgroup
                 tok_type = self.group_type[groupname]
+                tok1 = Token(tok_type, m.group(groupname), self.pos)
+                k = 0
+                val =""
+                
+
                 tok = tok_type
+                
                 self.pos = m.end()
                 if (tok == 'WHITESPACE') :
                     return ''
@@ -69,12 +77,3 @@ class Lexer(object):
 class LexerError(Exception):
     def __init__(self, pos):
         self.pos = pos
-
-CYK = parser.Parser('grammar.txt', " COMMENT ")
-
-def process(sentence) :
-    CYK.__call__(sentence)
-    CYK.parse()
-    return CYK.print_tree()
-
-
