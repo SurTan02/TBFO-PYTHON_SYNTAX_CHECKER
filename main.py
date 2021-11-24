@@ -4,6 +4,7 @@ import token_expressions
 import sys
 import os
 import rules_lexer
+import cekVar
 
 #CNF Sudah diconvert sebelum program ini dijalankan
 # fileGrammar = "CNFKITABARU.txt"
@@ -38,8 +39,11 @@ for tokens in lxForLine.tokens():
     elif (tokens == 'BREAK NEWLINE'):
         lenOfLine +=1
 
-print(lenOfLine)
+# print(lenOfLine)
 #Buat Array buat nampung
+
+
+
 line =[[] for i in range(lenOfLine)]
 i = 0
 for tokens in lx.tokens():
@@ -51,13 +55,15 @@ for tokens in lx.tokens():
             i+=1
         else:
             line[i].append(tokens)
+            
+                
 
-for i in range(lenOfLine):
-    print(line[i])
+# for i in range(lenOfLine):
+    
 
 #State
 ErrorFound = False
-if_toggle = 0
+if_count = 0
 isMultiLine = False
 indexLine = 0
 multiLineIdx =0
@@ -77,14 +83,19 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                 print("",end='')
         elif (not isMultiLine):
             
-            if (line[indexLine].count(' IF') != 0) :
+            if (not cekVar.variableValid(line[indexLine])):
+                
+                print("Syntax Error!")
+                print("Terdapat kesalahan syntax pada line \033[91m{}\033[0m".format(indexLine+1))
+                ErrorFound =True
+            elif (line[indexLine].count(' IF') != 0) :
                 
                 temp = line[indexLine].copy()
                 line[indexLine].clear()
                 for x in temp:
                     y = x.replace(' IF', 'IF')
                     line[indexLine].append(y)
-                if_toggle += 1
+                if_count += 1
                 
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
                     
@@ -100,7 +111,7 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                     ErrorFound =True
                    
             elif line[indexLine].count('ELIF') != 0:
-                if if_toggle > 0 :
+                if if_count > 0 :
                     line[indexLine].insert(0,'ELIFTOK')
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
                     
@@ -109,9 +120,9 @@ while (ErrorFound == False and indexLine!=lenOfLine):
                     ErrorFound =True
 
             elif line[indexLine].count('ELSE') != 0 :
-                if if_toggle > 0 :
+                if if_count > 0 :
                     line[indexLine].insert(0,'ELIFTOK')
-                if_toggle -= 1
+                if_count -= 1
                 if (not cyk.cekValid(cyk.CYK(line[indexLine],cyk.MapOfCNF(fileGrammar)))):
                     
                     print("Syntax Error!")
